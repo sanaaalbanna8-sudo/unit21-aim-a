@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>دليل الحل | الهدف أ | Unit 21</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <section class="gate" id="gate">
+    <form class="gate-card" id="gate-form">
+      <p class="kicker">Unit 21 · Learning Aim A</p>
+      <h1>دليل حل واجب الذكاء الاصطناعي</h1>
+      <p>اكتب اسمك قبل البدء.</p>
+      <label class="field">
+        <span>اسم الطالب <em>*</em></span>
+        <input id="student-name" name="name" type="text" maxlength="80" autocomplete="name" placeholder="اكتب اسمك" required>
+      </label>
+      <label class="field">
+        <span>الشعبة</span>
+        <input id="student-class" name="klass" type="text" maxlength="40" placeholder="اختياري">
+      </label>
+      <p class="hint" id="gate-hint"></p>
+      <button class="primary" type="submit">ابدأ المراحل</button>
+    </form>
+  </section>
+
+  <div class="app" id="app">
+    <aside class="side" id="side">
+      <div class="brand">
+        <small>Unit 21 · الهدف أ</small>
+        <strong>دليل الحل</strong>
+      </div>
+      <p class="who">الطالب: <b id="who"></b></p>
+      <div class="side-tools">
+        <button type="button" id="only-left">المتبقي فقط</button>
+        <button type="button" id="edit-name">تعديل الاسم</button>
+        <button type="button" id="reset">مسح التعليم</button>
+      </div>
+      <nav id="nav"></nav>
+    </aside>
+    <div class="main">
+      <header class="bar">
+        <div>
+          <button class="menu-btn" id="menu" type="button">المراحل</button>
+          <div class="frac" id="frac">0 <span>/ 0</span></div>
+          <p id="remain">المتبقي</p>
+        </div>
+        <div class="meter" aria-hidden="true"><i id="meter"></i></div>
+      </header>
+      <div class="chips" id="chips"></div>
+      <article class="stage" id="stage"></article>
+      <div class="pager">
+        <button class="ghost" id="prev" type="button">المرحلة السابقة</button>
+        <button class="primary" id="next" type="button">المرحلة التالية</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">جميع الحقوق محفوظة © 2026 <b>Sanaa albanna</b></footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/guide.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

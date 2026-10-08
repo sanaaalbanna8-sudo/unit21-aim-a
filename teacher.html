@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>متابعة دليل الهدف أ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="teacher">
+    <p class="kicker">تطبيق المتابعة · Unit 21 · الهدف أ</p>
+    <h1>جدول النتائج</h1>
+    <p>اسم الطالب، أسماء القطاعات الثلاثة، مدة استخدام الموقع، عدد الضغطات، والتقدم. زر «تنزيل إكسل» يحفظ الجدول على جهازك.</p>
+
+    <form class="lock panel" id="lock-form">
+      <label class="field">
+        <span>مفتاح لوحة المعلمة</span>
+        <span class="key-row">
+          <input id="teacher-key" type="text" autocomplete="off" value="sanaa21" placeholder="sanaa21">
+          <button class="primary" type="submit">فتح</button>
+        </span>
+      </label>
+      <p class="hint" id="lock-hint"></p>
+    </form>
+
+    <section id="board" hidden>
+      <div class="cards">
+        <article class="card"><b id="c-students">0</b><span>الطلاب</span></article>
+        <article class="card"><b id="c-active">0:00</b><span>متوسط مدة النشاط</span></article>
+        <article class="card"><b id="c-clicks">0</b><span>متوسط الضغطات</span></article>
+        <article class="card"><b id="c-done">0</b><span>أنهوا الدليل</span></article>
+        <article class="card"><b id="c-working">0</b><span>ما زالوا يعملون</span></article>
+      </div>
+      <div class="panel">
+        <div class="search">
+          <input id="search" type="search" placeholder="ابحثي بالاسم أو الشعبة">
+          <button class="ghost" id="refresh" type="button">تحديث</button>
+          <button class="ghost" id="excel" type="button">تنزيل إكسل</button>
+        </div>
+        <p class="cloud-note" id="status"></p>
+        <div style="overflow:auto">
+          <table class="board">
+            <thead>
+              <tr>
+                <th>الاسم</th>
+                <th>الشعبة</th>
+                <th>وين واصل</th>
+                <th>مدة الاستخدام</th>
+                <th>الضغطات</th>
+                <th>القطاع الأول</th>
+                <th>كتبه؟</th>
+                <th>القطاع الثاني</th>
+                <th>كتبه؟</th>
+                <th>القطاع الثالث</th>
+                <th>كتبه؟</th>
+                <th>المراحل</th>
+                <th>من</th>
+                <th>%</th>
+                <th>الحالة</th>
+                <th>آخر ظهور</th>
+              </tr>
+            </thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="lock panel" id="setup" hidden>
+      <h2>ربط التطبيق لكل الأجهزة</h2>
+      <ol class="setup">
+        <li>افتحي جدول النتائج، ثم الإضافات ثم Apps Script.</li>
+        <li>الصقي ملف Code.gs. معرّف الجدول جاهز داخل الملف.</li>
+        <li>انشري تطبيق ويب: التنفيذ أنا، والوصول أي شخص.</li>
+        <li>الصقي رابط /exec في js/config.js عند sheetsUrl، ثم حدّثي هذه الصفحة. المفتاح: sanaa21.</li>
+      </ol>
+    </section>
+  </main>
+  <footer class="site-footer">جميع الحقوق محفوظة © 2026 <b>Sanaa albanna</b></footer>
+  <script src="js/config.js?v=2"></script>
+  <script src="js/teacher.js?v=2"></script>
+</body>
+</html>
