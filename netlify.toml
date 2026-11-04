@@ -1,8 +1,13 @@
 [build]
-  publish = "unit11"
+  publish = "."
   command = "node tools/write-firebase-config.js"
 
 [[headers]]
   for = "/teacher.html"
+  [headers.values]
+    X-Robots-Tag = "noindex"
+
+[[headers]]
+  for = "/unit11/teacher.html"
   [headers.values]
     X-Robots-Tag = "noindex"
