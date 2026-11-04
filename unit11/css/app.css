@@ -392,6 +392,16 @@ h1 {
   font-size: 14px;
   letter-spacing: 0;
 }
+.brief.merit {
+  border-inline-start-color: var(--green);
+  background: var(--green-dim);
+}
+.brief.merit strong {
+  display: block;
+  color: var(--green);
+  font-size: 14px;
+  letter-spacing: 0;
+}
 .brief p { margin: 0; }
 .spec { display: grid; gap: 10px; margin: 12px 0 4px; }
 .spec div {
