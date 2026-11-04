@@ -353,11 +353,6 @@
 
   if (!linked) {
     show(setupEl);
-    fetch("firestore.rules").then(function (res) { return res.text(); }).then(function (text) {
-      document.getElementById("rules").value = text;
-    }).catch(function () {
-      document.getElementById("rules").value = "";
-    });
     return;
   }
   bootFirebase();
