@@ -9,10 +9,13 @@
   var detailEl = document.getElementById("detail");
   var cardsEl = document.getElementById("cards");
   var exportBtn = document.getElementById("export");
+  var wipeBtn = document.getElementById("wipe");
   var logoutBtn = document.getElementById("logout");
   var students = [];
   var openId = "";
   var unsubscribe = null;
+  var boardSeq = 0;
+  var emptyMessage = "لا سجلات بعد. تفتح الطالبة الدليل وتكتب اسمها بعد نشر تطبيق الويب.";
 
   function show(el) { el.hidden = false; }
   function hide(el) { el.hidden = true; }
@@ -96,6 +99,7 @@
   function paintTable() {
     var list = filtered();
     paintCards(students);
+    emptyEl.textContent = emptyMessage;
     emptyEl.hidden = list.length > 0;
     rowsEl.innerHTML = list.map(function (row) {
       var pct = row.percent || 0;
@@ -319,17 +323,21 @@
     hide(loginEl);
     show(boardEl);
     exportBtn.hidden = false;
+    wipeBtn.hidden = false;
+    var seq = ++boardSeq;
     var cb = "u11Board_" + Date.now();
     window[cb] = function (data) {
       delete window[cb];
       var node = document.getElementById(cb);
       if (node) node.remove();
+      if (seq !== boardSeq) return;
       if (!data || !data.ok) {
         emptyEl.hidden = false;
         emptyEl.textContent = data && data.error ? data.error : "تعذر قراءة الجدول.";
         return;
       }
       students = data.rows || [];
+      if (students.length) emptyMessage = "لا سجلات بعد. تفتح الطالبة الدليل وتكتب اسمها بعد نشر تطبيق الويب.";
       paintTable();
       paintDetail(selected());
     };
@@ -345,6 +353,45 @@
     document.body.appendChild(script);
     return true;
   }
+
+  wipeBtn.addEventListener("click", function () {
+    var cloud = window.U11_CLOUD || {};
+    var base = String(cloud.sheetsUrl || "").trim();
+    if (!base || wipeBtn.disabled) return;
+    var ok = window.confirm("سيمسح هذا كل أسماء الطلاب وتقدمهم من اللوحة وجدول المتابعة. لا يمكن التراجع.\nإذا كان دليل طالبة مفتوحاً الآن، سيعود سجلها عند الحفظ التالي.\nهل تتابعين؟");
+    if (!ok) return;
+    boardSeq += 1;
+    wipeBtn.disabled = true;
+    var cb = "u11Clear_" + Date.now();
+    window[cb] = function (data) {
+      delete window[cb];
+      var node = document.getElementById(cb);
+      if (node) node.remove();
+      wipeBtn.disabled = false;
+      if (!data || !data.ok) {
+        emptyEl.hidden = false;
+        emptyEl.textContent = data && data.error ? data.error : "تعذر المسح.";
+        return;
+      }
+      students = [];
+      openId = "";
+      emptyMessage = "تم مسح كل البيانات.";
+      paintTable();
+      paintDetail(null);
+      loadSheet();
+    };
+    var script = document.createElement("script");
+    script.id = cb;
+    var join = base.indexOf("?") === -1 ? "?" : "&";
+    script.src = base + join + "view=clear&confirm=1&key=" + encodeURIComponent(cloud.teacherKey || "") + "&callback=" + cb;
+    script.onerror = function () {
+      delete window[cb];
+      wipeBtn.disabled = false;
+      emptyEl.hidden = false;
+      emptyEl.textContent = "تعذر الاتصال لتفريغ الجدول.";
+    };
+    document.body.appendChild(script);
+  });
 
   if (loadSheet()) {
     window.setInterval(loadSheet, 20000);

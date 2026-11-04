@@ -46,6 +46,8 @@ button { cursor: pointer; }
   padding: 8px 14px;
 }
 .btn.solid { background: var(--green); color: #062117; border-color: transparent; font-weight: 700; }
+.btn.danger { color: var(--red); border-color: rgba(255, 141, 141, 0.45); }
+.btn:disabled { opacity: 0.55; cursor: default; }
 .wrap { width: min(1180px, calc(100% - 28px)); margin: 22px auto 48px; }
 .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
 .card, .panel, .setup, .login {

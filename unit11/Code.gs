@@ -37,6 +37,11 @@ function doGet(e) {
     if (!keyOk_(e)) return scriptOut_(e, { ok: false, error: "المفتاح غير صحيح" });
     return scriptOut_(e, { ok: true, rows: readBoard_() });
   }
+  if (view === "clear") {
+    if (!keyOk_(e)) return scriptOut_(e, { ok: false, error: "المفتاح غير صحيح" });
+    if (String(e.parameter.confirm || "") !== "1") return scriptOut_(e, { ok: false, error: "التأكيد ناقص" });
+    return scriptOut_(e, clearBoard_());
+  }
   return ContentService.createTextOutput("متابعة الوحدة 11 — جاهز.");
 }
 
@@ -153,6 +158,31 @@ function ensureBoard_(ss) {
   }
   sh.setFrozenRows(1);
   return sh;
+}
+
+function clearBoard_() {
+  var lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(30000);
+    var ss = openSheet_();
+    var names = ["النتائج", "المراحل", "البنود", "التنقل"];
+    var removed = 0;
+    for (var i = 0; i < names.length; i++) removed += clearRows_(ss.getSheetByName(names[i]));
+    return { ok: true, removed: removed };
+  } catch (err) {
+    return { ok: false, error: String(err) };
+  } finally {
+    try { lock.releaseLock(); } catch (ignore) {}
+  }
+}
+
+function clearRows_(sh) {
+  if (!sh) return 0;
+  var last = sh.getLastRow();
+  if (last < 2) return 0;
+  var count = last - 1;
+  sh.deleteRows(2, count);
+  return count;
 }
 
 function readBoard_() {
