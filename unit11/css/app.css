@@ -382,6 +382,16 @@ h1 {
   border-inline-start-color: var(--amber);
   background: var(--amber-dim);
 }
+.brief.distinction {
+  border-inline-start-color: var(--amber);
+  background: var(--amber-dim);
+}
+.brief.distinction strong {
+  display: block;
+  color: var(--amber);
+  font-size: 14px;
+  letter-spacing: 0;
+}
 .brief p { margin: 0; }
 .spec { display: grid; gap: 10px; margin: 12px 0 4px; }
 .spec div {
