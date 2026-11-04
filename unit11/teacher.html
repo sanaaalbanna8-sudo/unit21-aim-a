@@ -24,12 +24,11 @@
   <main class="wrap">
     <section class="setup" id="setup" hidden>
       <h1>الربط لم يكتمل بعد</h1>
-      <p>الدليل يعمل عند الطالبة ويحفظ تقدمها على جهازها. هذه اللوحة تعرض الجميع بعد ربط Firebase.</p>
+      <p>الدليل يحفظ التقدم على جهاز الطالبة. اللوحة والجدول يعرضان الجميع بعد نشر تطبيق الويب.</p>
       <ol>
-        <li>أنشئي مشروعاً في Firebase، ثم أضيفي تطبيق ويب وانسخي إعداداته.</li>
-        <li>فعّلي Cloud Firestore والصقي قواعد <span class="ltr">firestore.rules</span> في تبويب القواعد.</li>
-        <li>من Authentication فعّلي البريد وكلمة السر، وأنشئي مستخدم المعلمة.</li>
-        <li>في Netlify أضيفي المتغير <span class="ltr">FIREBASE_CONFIG</span> بقيمة JSON للإعدادات، ثم أعيدي النشر. أو الصقي الإعدادات في <span class="ltr">js/firebase-config.js</span> قبل الرفع.</li>
+        <li>افتحي مشروع Apps Script والصقي <span class="ltr">Code.gs</span> مكان الكود الحالي.</li>
+        <li>انشري: تطبيق ويب، التنفيذ: أنا، الوصول: أي شخص.</li>
+        <li>الصقي رابط <span class="ltr">/exec</span> في <span class="ltr">js/cloud.js</span> عند <span class="ltr">sheetsUrl</span>، ثم أعيدي رفع الموقع.</li>
       </ol>
       <p>بعد الدخول تظهر هنا: الاسم، الشعبة، المرحلة الحالية، المنجز، المتبقي، دقائق العمل، النقرات، وآخر ظهور. تنزيل إكسل يعطي خمس أوراق.</p>
       <textarea class="rules" id="rules" readonly></textarea>
@@ -80,8 +79,9 @@
       <article class="panel detail" id="detail" hidden></article>
     </section>
   </main>
+  <script src="js/cloud.js?v=1"></script>
   <script src="js/firebase-config.js?v=1"></script>
   <script src="js/xlsx.js?v=1"></script>
-  <script src="js/teacher.js?v=1"></script>
+  <script src="js/teacher.js?v=2"></script>
 </body>
 </html>

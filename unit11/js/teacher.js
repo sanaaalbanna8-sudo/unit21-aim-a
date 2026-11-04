@@ -311,6 +311,46 @@
     });
   });
 
+  function loadSheet() {
+    var cloud = window.U11_CLOUD || {};
+    var base = String(cloud.sheetsUrl || "").trim();
+    if (!base) return false;
+    hide(setupEl);
+    hide(loginEl);
+    show(boardEl);
+    exportBtn.hidden = false;
+    var cb = "u11Board_" + Date.now();
+    window[cb] = function (data) {
+      delete window[cb];
+      var node = document.getElementById(cb);
+      if (node) node.remove();
+      if (!data || !data.ok) {
+        emptyEl.hidden = false;
+        emptyEl.textContent = data && data.error ? data.error : "تعذر قراءة الجدول.";
+        return;
+      }
+      students = data.rows || [];
+      paintTable();
+      paintDetail(selected());
+    };
+    var script = document.createElement("script");
+    script.id = cb;
+    var join = base.indexOf("?") === -1 ? "?" : "&";
+    script.src = base + join + "view=board&key=" + encodeURIComponent(cloud.teacherKey || "") + "&callback=" + cb;
+    script.onerror = function () {
+      delete window[cb];
+      emptyEl.hidden = false;
+      emptyEl.textContent = "تعذر الاتصال بتطبيق الجدول.";
+    };
+    document.body.appendChild(script);
+    return true;
+  }
+
+  if (loadSheet()) {
+    window.setInterval(loadSheet, 20000);
+    return;
+  }
+
   if (!linked) {
     show(setupEl);
     fetch("firestore.rules").then(function (res) { return res.text(); }).then(function (text) {

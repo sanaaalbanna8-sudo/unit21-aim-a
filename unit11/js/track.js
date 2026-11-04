@@ -161,25 +161,127 @@
     };
   }
 
+  function cloudUrl() {
+    return String((window.U11_CLOUD || {}).sheetsUrl || "").trim();
+  }
+
+  function stamp(ms) {
+    var date = new Date(ms || Date.now());
+    function pad(n) { return (n < 10 ? "0" : "") + n; }
+    return date.getFullYear() + "-" + pad(date.getMonth() + 1) + "-" + pad(date.getDate()) + " " + pad(date.getHours()) + ":" + pad(date.getMinutes());
+  }
+
+  function sheetPack(body) {
+    var stages = (body.stages || []).filter(function (stage) { return !stage.read; }).map(function (stage) {
+      return {
+        id: stage.id,
+        group: stage.group,
+        nav: stage.nav,
+        code: stage.code,
+        pointsTotal: stage.pointsTotal,
+        pointsDone: stage.pointsDone,
+        done: stage.done,
+        minutes: Math.round(((body.timeByStage || {})[stage.id] || 0) / 60000),
+        clicks: (body.clicksByStage || {})[stage.id] || 0,
+        points: (stage.points || []).map(function (point) {
+          return { title: point.title, done: point.done };
+        })
+      };
+    });
+    return {
+      kind: "u11",
+      deviceId: body.deviceId,
+      name: body.name,
+      klass: body.klass,
+      percent: body.percent,
+      stagesDone: body.stagesDone,
+      stagesTotal: body.stagesTotal,
+      pointsDone: body.pointsDone,
+      pointsLeft: body.pointsLeft,
+      rowsDone: body.rowsDone,
+      currentCode: body.currentCode,
+      currentNav: body.currentNav,
+      minutes: Math.round((body.activeMs || 0) / 60000),
+      sessions: body.sessions,
+      clicks: body.clicks,
+      resets: body.resets,
+      firstSeen: stamp(body.firstSeen),
+      lastSeen: stamp(body.lastSeenClient),
+      stages: stages,
+      log: (body.log || []).slice(-40).map(function (step) {
+        return { id: step.id, nav: step.nav, t: stamp(step.t) };
+      })
+    };
+  }
+
+  function ensureSink() {
+    var iframe = document.getElementById("u11Sink");
+    if (!iframe) {
+      iframe = document.createElement("iframe");
+      iframe.name = "u11Sink";
+      iframe.id = "u11Sink";
+      iframe.setAttribute("aria-hidden", "true");
+      iframe.style.cssText = "position:absolute;width:0;height:0;border:0;visibility:hidden";
+      document.body.appendChild(iframe);
+    }
+    var form = document.getElementById("u11CloudForm");
+    if (!form) {
+      form = document.createElement("form");
+      form.id = "u11CloudForm";
+      form.method = "POST";
+      form.target = "u11Sink";
+      form.acceptCharset = "UTF-8";
+      form.style.display = "none";
+      ["payload", "data"].forEach(function (name) {
+        var input = document.createElement("input");
+        input.type = "hidden";
+        input.name = name;
+        form.appendChild(input);
+      });
+      document.body.appendChild(form);
+    }
+    return form;
+  }
+
+  function sendSheet(body) {
+    var url = cloudUrl();
+    if (!url) return false;
+    var text = JSON.stringify(sheetPack(body));
+    try {
+      var form = ensureSink();
+      form.action = url;
+      form.querySelector("[name=payload]").value = text;
+      form.querySelector("[name=data]").value = text;
+      form.submit();
+      setLamp("يُرسل إلى جدول المعلمة", "on");
+      return true;
+    } catch (err) {
+      setLamp("تعذر إرسال السجل إلى الجدول", "wait");
+      return false;
+    }
+  }
+
   function flush() {
     markSession();
     if (!window.U11Guide || !window.U11Guide.snapshot) return;
     var snap;
     try { snap = window.U11Guide.snapshot(); } catch (err) { return; }
     if (!snap || !snap.name || snap.name.length < 2) return;
-    if (!db) return;
     var body = payload(snap);
+    sendSheet(body);
+    if (!db) return;
     body.lastSeen = firebase.firestore.FieldValue.serverTimestamp();
     db.collection("students").doc(body.deviceId).set(body, { merge: true }).then(function () {
       setLamp("سجل المعلمة محدّث", "on");
     }).catch(function () {
-      setLamp("تعذر إرسال السجل. التقدم محفوظ على هذا الجهاز", "wait");
+      if (!cloudUrl()) setLamp("تعذر إرسال السجل. التقدم محفوظ على هذا الجهاز", "wait");
     });
   }
 
   function boot() {
+    if (cloudUrl()) setLamp("متصل بجدول المعلمة", "on");
     if (!linked) {
-      setLamp("التعقب على هذا الجهاز فقط، بانتظار ربط Firebase", "wait");
+      if (!cloudUrl()) setLamp("التعقب على هذا الجهاز فقط، بانتظار نشر جدول المعلمة", "wait");
       return;
     }
     setLamp("جارٍ الاتصال بسجل المعلمة", "wait");
