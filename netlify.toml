@@ -1,6 +1,6 @@
 [build]
-  publish = "."
-  command = "node tools/write-firebase-config.js"
+  publish = "site"
+  command = "node tools/write-firebase-config.js && node tools/prepare-site.js"
 
 [[headers]]
   for = "/teacher.html"
