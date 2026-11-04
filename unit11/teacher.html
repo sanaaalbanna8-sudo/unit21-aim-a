@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>لوحة الطالبات | الوحدة 11</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/teacher.css?v=1">
+</head>
+<body>
+  <header class="top">
+    <div>
+      <strong>لوحة الطالبات</strong>
+      <small>U11 // TEACHER</small>
+    </div>
+    <span class="spacer"></span>
+    <a href="index.html">الدليل</a>
+    <button class="btn solid" id="export" type="button" hidden>تنزيل إكسل</button>
+    <button class="btn" id="logout" type="button" hidden>خروج</button>
+  </header>
+  <main class="wrap">
+    <section class="setup" id="setup" hidden>
+      <h1>الربط لم يكتمل بعد</h1>
+      <p>الدليل يعمل عند الطالبة ويحفظ تقدمها على جهازها. هذه اللوحة تعرض الجميع بعد ربط Firebase.</p>
+      <ol>
+        <li>أنشئي مشروعاً في Firebase، ثم أضيفي تطبيق ويب وانسخي إعداداته.</li>
+        <li>فعّلي Cloud Firestore والصقي قواعد <span class="ltr">firestore.rules</span> في تبويب القواعد.</li>
+        <li>من Authentication فعّلي البريد وكلمة السر، وأنشئي مستخدم المعلمة.</li>
+        <li>في Netlify أضيفي المتغير <span class="ltr">FIREBASE_CONFIG</span> بقيمة JSON للإعدادات، ثم أعيدي النشر. أو الصقي الإعدادات في <span class="ltr">js/firebase-config.js</span> قبل الرفع.</li>
+      </ol>
+      <p>بعد الدخول تظهر هنا: الاسم، الشعبة، المرحلة الحالية، المنجز، المتبقي، دقائق العمل، النقرات، وآخر ظهور. تنزيل إكسل يعطي خمس أوراق.</p>
+      <textarea class="rules" id="rules" readonly></textarea>
+    </section>
+    <section class="login" id="login" hidden>
+      <h1>دخول المعلمة</h1>
+      <form id="login-form">
+        <label class="field">البريد
+          <input id="email" type="email" autocomplete="username" required>
+        </label>
+        <label class="field">كلمة السر
+          <input id="password" type="password" autocomplete="current-password" required>
+        </label>
+        <p class="hint" id="login-hint"></p>
+        <button class="btn solid" type="submit">دخول</button>
+      </form>
+    </section>
+    <section id="board" hidden>
+      <div class="cards" id="cards"></div>
+      <div class="tools">
+        <input id="q" type="search" placeholder="ابحث بالاسم أو الشعبة">
+        <select id="filter">
+          <option value="all">كل الطالبات</option>
+          <option value="open">لم يكتمل</option>
+          <option value="done">اكتمل</option>
+          <option value="today">ظهرن اليوم</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>الاسم</th>
+              <th>الشعبة</th>
+              <th>التقدم</th>
+              <th>المرحلة الحالية</th>
+              <th>المنجز</th>
+              <th>المتبقي</th>
+              <th>الدقائق</th>
+              <th>النقرات</th>
+              <th>آخر ظهور</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+      <p class="empty" id="empty" hidden>لا سجلات بعد. تفتح الطالبة الدليل وتكتب اسمها بعد ربط Firebase.</p>
+      <article class="panel detail" id="detail" hidden></article>
+    </section>
+  </main>
+  <script src="js/firebase-config.js?v=1"></script>
+  <script src="js/xlsx.js?v=1"></script>
+  <script src="js/teacher.js?v=1"></script>
+</body>
+</html>
