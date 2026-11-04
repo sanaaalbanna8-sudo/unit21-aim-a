@@ -83,7 +83,7 @@
     var done = list.filter(function (row) { return (row.percent || 0) >= 100; }).length;
     var today = list.filter(isToday).length;
     var items = [
-      [count, "طالبات"],
+      [count, "طلاب"],
       [avg + "%", "متوسط التقدم"],
       [done, "أتممن الدليل"],
       [today, "ظهرن اليوم"]

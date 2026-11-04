@@ -133,8 +133,12 @@ function ensureBoard_(ss) {
   var sh = ss.getSheetByName("اللوحة");
   if (!sh) sh = ss.insertSheet("اللوحة", 0);
   sh.setRightToLeft(true);
-  if (sh.getLastRow() > 0) return sh;
-  var labels = ["عدد الطالبات", "متوسط التقدم", "أتممن الدليل", "مجموع دقائق العمل", "مجموع النقرات"];
+  if (sh.getLastRow() > 0) {
+    if (String(sh.getRange(2, 1).getValue()) === "عدد الطالبات") sh.getRange(2, 1).setValue("عدد الطلاب");
+    if (String(sh.getRange(4, 1).getValue()) === "أتممن الدليل") sh.getRange(4, 1).setValue("أتموا الدليل");
+    return sh;
+  }
+  var labels = ["عدد الطلاب", "متوسط التقدم", "أتموا الدليل", "مجموع دقائق العمل", "مجموع النقرات"];
   var formulas = [
     "=COUNTA('النتائج'!B2:B)",
     "=IFERROR(ROUND(AVERAGE('النتائج'!D2:D),0),0)",
