@@ -987,9 +987,6 @@ body.ready .gate { display: none; }
 .hint { min-height: 1.4em; color: var(--amber); }
 .gate-note { margin: 0 0 4px; font-size: 14px; }
 .who { margin: 0 8px 8px; color: var(--muted); }
-.sync-lamp { margin: 0 8px 8px; color: var(--dim); font-size: 12px; line-height: 1.6; }
-.sync-lamp.is-on { color: var(--green); }
-.sync-lamp.is-wait { color: var(--amber); }
 .who b { color: var(--green-2); }
 .side-tools { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 8px 10px; }
 .side-tools button {

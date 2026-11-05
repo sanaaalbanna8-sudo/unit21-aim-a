@@ -3,7 +3,6 @@
   var DEVICE = "u11-device";
   var IDLE_MS = 120000;
   var BEAT_MS = 15000;
-  var lamp = document.getElementById("sync-lamp");
   var cfg = window.U11_FIREBASE;
   var linked = !!(cfg && cfg.apiKey && cfg.projectId);
   var db = null;
@@ -49,14 +48,6 @@
 
   function savePresence() {
     localStorage.setItem(PRESENCE, JSON.stringify(presence));
-  }
-
-  function setLamp(text, mode) {
-    if (!lamp) return;
-    lamp.hidden = false;
-    lamp.textContent = text;
-    lamp.classList.toggle("is-on", mode === "on");
-    lamp.classList.toggle("is-wait", mode === "wait");
   }
 
   function working() {
@@ -253,10 +244,8 @@
       form.querySelector("[name=payload]").value = text;
       form.querySelector("[name=data]").value = text;
       form.submit();
-      setLamp("يُرسل إلى جدول المعلمة", "on");
       return true;
     } catch (err) {
-      setLamp("تعذر إرسال السجل إلى الجدول", "wait");
       return false;
     }
   }
@@ -271,20 +260,11 @@
     sendSheet(body);
     if (!db) return;
     body.lastSeen = firebase.firestore.FieldValue.serverTimestamp();
-    db.collection("students").doc(body.deviceId).set(body, { merge: true }).then(function () {
-      setLamp("سجل المعلمة محدّث", "on");
-    }).catch(function () {
-      if (!cloudUrl()) setLamp("تعذر إرسال السجل. التقدم محفوظ على هذا الجهاز", "wait");
-    });
+    db.collection("students").doc(body.deviceId).set(body, { merge: true }).catch(function () {});
   }
 
   function boot() {
-    if (cloudUrl()) setLamp("متصل بجدول المعلمة", "on");
-    if (!linked) {
-      if (!cloudUrl()) setLamp("التعقب على هذا الجهاز فقط، بانتظار نشر جدول المعلمة", "wait");
-      return;
-    }
-    setLamp("جارٍ الاتصال بسجل المعلمة", "wait");
+    if (!linked) return;
     var appScript = document.createElement("script");
     appScript.src = "https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js";
     appScript.onload = function () {
@@ -293,17 +273,12 @@
       storeScript.onload = function () {
         if (!firebase.apps.length) firebase.initializeApp(cfg);
         db = firebase.firestore();
-        setLamp("متصل بسجل المعلمة", "on");
         flush();
       };
-      storeScript.onerror = function () {
-        setLamp("تعذر تحميل Firebase. التقدم محفوظ على هذا الجهاز", "wait");
-      };
+      storeScript.onerror = function () {};
       document.head.appendChild(storeScript);
     };
-    appScript.onerror = function () {
-      setLamp("تعذر تحميل Firebase. التقدم محفوظ على هذا الجهاز", "wait");
-    };
+    appScript.onerror = function () {};
     document.head.appendChild(appScript);
   }
 
