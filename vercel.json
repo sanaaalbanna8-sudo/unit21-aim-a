@@ -1,0 +1,12 @@
+{
+  "buildCommand": "node tools/write-firebase-config.js && node tools/prepare-unit11.js",
+  "outputDirectory": "site",
+  "headers": [
+    {
+      "source": "/teacher.html",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex" }
+      ]
+    }
+  ]
+}
