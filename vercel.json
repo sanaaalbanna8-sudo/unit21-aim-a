@@ -1,6 +1,8 @@
 {
-  "buildCommand": "node tools/write-firebase-config.js && node tools/prepare-unit11.js",
-  "outputDirectory": "site",
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "buildCommand": null,
+  "outputDirectory": null,
   "headers": [
     {
       "source": "/teacher.html",
