@@ -775,16 +775,16 @@
   var STAGES = [
     { id: "cover", group: "التمهيد", nav: "غلاف الدليل", code: "00", sel: ["#cover"], read: true },
     { id: "intro", group: "التمهيد", nav: "المقدمة والإرشادات", code: "01", sel: ["#intro"], read: true },
-    { id: "act1", group: "الهدف A", nav: "افتتاح PayWave", code: "A·B", sel: ["#plan", "#act1"] },
-    { id: "ap1", group: "الهدف A", nav: "التهديدات", code: "A.P1", sel: ["#ap1"] },
-    { id: "ap2", group: "الهدف A", nav: "الثغرات", code: "A.P2", sel: ["#ap2"] },
-    { id: "ap3", group: "الهدف A", nav: "التدابير", code: "A.P3", sel: ["#ap3"] },
-    { id: "bp", group: "الهدف B", nav: "الشبكات", code: "B.P4", sel: ["#bp"] },
-    { id: "am", group: "الهدف B", nav: "التقييم", code: "D1", sel: ["#am"] },
-    { id: "act2", group: "الهدف C", nav: "افتتاح المركز", code: "C·D", sel: ["#act2"] },
-    { id: "cp6", group: "الهدف C", nav: "المخاطر", code: "C.P6", sel: ["#cp6"] },
-    { id: "cp7", group: "الهدف C", nav: "خطة الأمن", code: "C.P7", sel: ["#cp7"] },
-    { id: "cd", group: "الهدف D", nav: "السياسات والأدلة", code: "D", sel: ["#cd", "#dp"] },
+    { id: "act1", group: "PayWave", nav: "افتتاح PayWave", code: "02", sel: ["#plan", "#act1"] },
+    { id: "ap1", group: "PayWave", nav: "التهديدات", code: "03", sel: ["#ap1"] },
+    { id: "ap2", group: "PayWave", nav: "الثغرات", code: "04", sel: ["#ap2"] },
+    { id: "ap3", group: "PayWave", nav: "التدابير", code: "05", sel: ["#ap3"] },
+    { id: "bp", group: "PayWave", nav: "الشبكات", code: "06", sel: ["#bp"] },
+    { id: "am", group: "PayWave", nav: "التقييم", code: "07", sel: ["#am"] },
+    { id: "act2", group: "Clearwater", nav: "افتتاح المركز", code: "08", sel: ["#act2"] },
+    { id: "cp6", group: "Clearwater", nav: "المخاطر", code: "09", sel: ["#cp6"] },
+    { id: "cp7", group: "Clearwater", nav: "خطة الأمن", code: "10", sel: ["#cp7"] },
+    { id: "cd", group: "Clearwater", nav: "السياسات والأدلة", code: "11", sel: ["#cd", "#dp"] },
     { id: "end", group: "الإغلاق", nav: "تسليم الملفين", code: "END", sel: ["#guide-end"] }
   ];
   var state = loadState();
@@ -1190,7 +1190,7 @@
     addCopyButtons(host);
     addRowMarks(host);
     host.querySelectorAll("aside.think").forEach(function (box) {
-      if (!box.closest(".point")) box.remove();
+      if (!box.closest(".point") && !box.closest("#stage-intro")) box.remove();
     });
   }
 
@@ -1202,7 +1202,7 @@
 
   function paywaveDone() {
     return STAGES.every(function (stage) {
-      if (stage.group !== "الهدف A" && stage.group !== "الهدف B") return true;
+      if (stage.group !== "PayWave") return true;
       return stageDone(stage);
     });
   }
