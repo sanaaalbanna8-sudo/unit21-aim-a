@@ -113,6 +113,7 @@
         "<td><bdi dir=\"ltr\">" + minutes(row.activeMs) + "</bdi></td>" +
         "<td><bdi dir=\"ltr\">" + (row.clicks || 0) + "</bdi></td>" +
         "<td>" + escapeHtml(when(row.lastSeen || row.lastSeenClient)) + "</td>" +
+        "<td><button type=\"button\" class=\"row-drop\" data-drop=\"" + escapeHtml(row.id) + "\">مسح</button></td>" +
         "</tr>";
     }).join("");
   }
@@ -167,12 +168,62 @@
   }
 
   rowsEl.addEventListener("click", function (event) {
+    var drop = event.target.closest("[data-drop]");
+    if (drop) {
+      event.preventDefault();
+      event.stopPropagation();
+      dropStudent(drop.getAttribute("data-drop"));
+      return;
+    }
     var tr = event.target.closest("tr");
     if (!tr) return;
     openId = tr.getAttribute("data-id");
     paintTable();
     paintDetail(selected());
   });
+
+  function dropStudent(id) {
+    var cloud = window.U11_CLOUD || {};
+    var base = String(cloud.sheetsUrl || "").trim();
+    if (!base || !id) return;
+    var row = students.filter(function (item) { return item.id === id; })[0];
+    var name = row && row.name ? row.name : "هذا الجهاز";
+    var ok = window.confirm("سيمسح سجل «" + name + "» فقط من اللوحة وجدول المتابعة. لا يمكن التراجع.\nإذا كان دليل هذا الجهاز مفتوحاً الآن، سيعود سجله عند الحفظ التالي.\nهل تتابعين؟");
+    if (!ok) return;
+    boardSeq += 1;
+    var buttons = rowsEl.querySelectorAll("[data-drop]");
+    for (var i = 0; i < buttons.length; i++) buttons[i].disabled = true;
+    var cb = "u11Drop_" + Date.now();
+    window[cb] = function (data) {
+      delete window[cb];
+      var node = document.getElementById(cb);
+      if (node) node.remove();
+      if (!data || !data.ok) {
+        emptyEl.hidden = false;
+        emptyEl.textContent = data && data.error ? data.error : "تعذر مسح هذا الصف.";
+        paintTable();
+        return;
+      }
+      students = students.filter(function (item) { return item.id !== id; });
+      if (openId === id) openId = "";
+      emptyMessage = "تم مسح سجل «" + name + "».";
+      paintTable();
+      paintDetail(selected());
+      loadSheet();
+    };
+    var script = document.createElement("script");
+    script.id = cb;
+    var join = base.indexOf("?") === -1 ? "?" : "&";
+    script.src = base + join + "view=drop&confirm=1&id=" + encodeURIComponent(id) +
+      "&key=" + encodeURIComponent(cloud.teacherKey || "") + "&callback=" + cb;
+    script.onerror = function () {
+      delete window[cb];
+      emptyEl.hidden = false;
+      emptyEl.textContent = "تعذر الاتصال لمسح هذا الصف.";
+      paintTable();
+    };
+    document.body.appendChild(script);
+  }
   document.getElementById("q").addEventListener("input", paintTable);
   document.getElementById("filter").addEventListener("change", paintTable);
 

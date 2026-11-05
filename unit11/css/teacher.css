@@ -73,6 +73,16 @@ table { width: 100%; border-collapse: collapse; font-size: 15px; }
 th, td { padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
 th { color: var(--dim); font-weight: 600; background: var(--panel-2); position: sticky; top: 0; }
 tr { cursor: pointer; }
+.row-drop {
+  background: transparent;
+  color: var(--red);
+  border: 1px solid rgba(255, 141, 141, 0.45);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font: inherit;
+  font-size: 13px;
+}
+.row-drop:disabled { opacity: 0.55; cursor: default; }
 tr:hover td { background: rgba(62, 230, 162, 0.05); }
 tr.is-open td { background: var(--green-dim); }
 .bar { height: 8px; width: 88px; border-radius: 99px; background: #1c2833; display: inline-block; vertical-align: middle; margin-inline-start: 8px; }

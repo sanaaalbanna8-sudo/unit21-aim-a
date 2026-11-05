@@ -42,6 +42,11 @@ function doGet(e) {
     if (String(e.parameter.confirm || "") !== "1") return scriptOut_(e, { ok: false, error: "التأكيد ناقص" });
     return scriptOut_(e, clearBoard_());
   }
+  if (view === "drop") {
+    if (!keyOk_(e)) return scriptOut_(e, { ok: false, error: "المفتاح غير صحيح" });
+    if (String(e.parameter.confirm || "") !== "1") return scriptOut_(e, { ok: false, error: "التأكيد ناقص" });
+    return scriptOut_(e, dropBoard_(String(e.parameter.id || "")));
+  }
   return ContentService.createTextOutput("متابعة الوحدة 11 — جاهز.");
 }
 
@@ -182,6 +187,38 @@ function clearRows_(sh) {
   if (last < 2) return 0;
   var count = last - 1;
   sh.deleteRows(2, count);
+  return count;
+}
+
+function dropBoard_(id) {
+  var lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(30000);
+    if (!/^[A-Za-z0-9-]{8,80}$/.test(id)) return { ok: false, error: "المعرّف غير صالح" };
+    var ss = openSheet_();
+    var names = ["النتائج", "المراحل", "البنود", "التنقل"];
+    var removed = 0;
+    for (var i = 0; i < names.length; i++) removed += dropRows_(ss.getSheetByName(names[i]), id);
+    return { ok: true, removed: removed };
+  } catch (err) {
+    return { ok: false, error: String(err) };
+  } finally {
+    try { lock.releaseLock(); } catch (ignore) {}
+  }
+}
+
+function dropRows_(sh, id) {
+  if (!sh) return 0;
+  var last = sh.getLastRow();
+  if (last < 2) return 0;
+  var ids = sh.getRange(2, 1, last - 1, 1).getValues();
+  var count = 0;
+  for (var i = ids.length - 1; i >= 0; i--) {
+    if (String(ids[i][0]) === id) {
+      sh.deleteRow(i + 2);
+      count++;
+    }
+  }
   return count;
 }
 
